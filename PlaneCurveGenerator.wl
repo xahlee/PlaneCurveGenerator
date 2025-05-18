@@ -24,10 +24,11 @@ Cissoids, Witch of Angnesi... etc.
 	normal, parallel, caustics, evolutes, radial, concoid, inversion
 *)
 
+(* :Homepage: http://xahlee.info/M/plane_curve_generator.html *)
+
 (* :Mathematica Version: 10 *)
-(* :Package Version: 2.0, 2024-07-17 *)
-(* :History:
-*)
+(* :Package Version: 2.1.20250221220942 *)
+(* :History: *)
 
 (* :Discussion:
 This package exports a set of graphical functions that generate animation
@@ -1021,75 +1022,75 @@ Module[{nOfFrames,tMin,tMax,tStep, margin,
 ]
 
 Options[HyperbolaGenerator] =
-	Join[
-		{NumberOfFrames->30},
-		Options[Graphics]
-	];
+ Join[
+  {NumberOfFrames->30},
+  Options[Graphics]
+ ];
 
 HyperbolaGenerator[ radii_List:{2,1}, tRange_List:{0, 1.4}, opts:OptionsPattern[]] :=
 Module[{nOfFrames,tMin,tMax,tStep, a,b, maxR,
-	tRangeList, sec, tan, trailPointList,
-	staticGP, movingGP,lastFrameGP},
+ tRangeList, sec, tan, trailPointList,
+ staticGP, movingGP,lastFrameGP},
 
-	nOfFrames = OptionValue[ NumberOfFrames ];
+ nOfFrames = OptionValue[ NumberOfFrames ];
 
-	{tMin, tMax, tStep} =
-		If[ Length@tRange===3,
-			N@tRange,
-			N@{First@tRange, Last@tRange, (tMax-tMin)/(nOfFrames-1) }
-		];
+ {tMin, tMax, tStep} =
+  If[ Length@tRange===3,
+   N@tRange,
+   N@{First@tRange, Last@tRange, (tMax-tMin)/(nOfFrames-1) }
+  ];
 
-	{a,b} = radii; maxR = Max[ a,b];
-	tRangeList = Table[ Sqrt[t], {t, tMin^2, tMax^2, (tMin+tMax) tStep} ];
-	sec = Sec /@ tRangeList;
-	tan = Tan /@ tRangeList;
-	trailPointList = MapThread[{a #1,b #2}&,{sec,tan}];
+ {a,b} = radii; maxR = Max[ a,b];
+ tRangeList = Table[ Sqrt[t], {t, tMin^2, tMax^2, (tMin+tMax) tStep} ];
+ sec = Sec /@ tRangeList;
+ tan = Tan /@ tRangeList;
+ trailPointList = MapThread[{a #1,b #2}&,{sec,tan}];
 
-	staticGP = {Hue[0,0,0], Circle[{0,0}, a], Circle[{0,0}, b],
-		PointSize[.02], Point[{0,0}],
-		Line[{{a,-50 a},{a, 50 a}}],
-		Line[{{b,-50 b},{b, 50 b}}]
-	};
+ staticGP = {Hue[0,0,0], Circle[{0,0}, a], Circle[{0,0}, b],
+  PointSize[.02], Point[{0,0}],
+  Line[{{a,-50 a},{a, 50 a}}],
+  Line[{{b,-50 b},{b, 50 b}}]
+ };
 
 (* movingGP is a function for mapping into integers *)
-	movingGP =
-	{	Hue[.65], Thickness[.008],
-		Line[{ {0,0}, maxR {1,1 tan[[#]]} }],
-		Hue[.4, 1, .5], Thickness[.004],
-		Circle[{0,0}, a sec[[#]], {0, tRangeList[[#]] }],
-		Line[{
-			{a sec[[#]],0},
-			{a sec[[#]], b tan[[#]] },
-			{b, b tan[[#]]}
-		}],
-		PointSize[.02],
-		Point[{a, a tan[[#]]}], Point[{b,b tan[[#]]}],
-		Hue[0], Point@{a sec[[#]], b tan[[#]] }
-	}&;
+ movingGP =
+ { Hue[.65], Thickness[.008],
+  Line[{ {0,0}, maxR {1,1 tan[[#]]} }],
+  Hue[.4, 1, .5], Thickness[.004],
+  Circle[{0,0}, a sec[[#]], {0, tRangeList[[#]] }],
+  Line[{
+   {a sec[[#]],0},
+   {a sec[[#]], b tan[[#]] },
+   {b, b tan[[#]]}
+  }],
+  PointSize[.02],
+  Point[{a, a tan[[#]]}], Point[{b,b tan[[#]]}],
+  Hue[0], Point@{a sec[[#]], b tan[[#]] }
+ }&;
 
-	lastFrameGP = {staticGP,
-		Hue[0], PointSize[.01], Point /@ trailPointList,
-		movingGP@ Length@ tRangeList
-	};
+ lastFrameGP = {staticGP,
+  Hue[0], PointSize[.01], Point /@ trailPointList,
+  movingGP@ Length@ tRangeList
+ };
 
-		Table[
-				Graphics[
-					{ staticGP,
-					Hue[0], PointSize[.01],Point/@ Take[ trailPointList,t],
-						movingGP[t]
-					}, FilterRules[ {opts}, Options[ Graphics ] ],
-				AspectRatio->Automatic, Axes->True,
-				PlotRange->{{-maxR, a 6},{-maxR, b 6}}
-				],
-			{t, Length@ tRangeList}
-		]
+  Table[
+    Graphics[
+     { staticGP,
+     Hue[0], PointSize[.01],Point/@ Take[ trailPointList,t],
+      movingGP[t]
+     }, FilterRules[ {opts}, Options[ Graphics ] ],
+    AspectRatio->Automatic, Axes->True,
+    PlotRange->{{-maxR, a 6},{-maxR, b 6}}
+    ],
+   {t, Length@ tRangeList}
+  ]
 ]
 
 Options[HypotrochoidGenerator] =
-	Join[
-		{NumberOfFrames->41},
-		Options[Graphics]
-	];
+ Join[
+  {NumberOfFrames->41},
+  Options[Graphics]
+ ];
 
 HypotrochoidGenerator[{a_,b_,h_}, tRange_List:{Automatic}, opts:OptionsPattern[]] :=
 Module[{nOfFrames,tMin,tMax,tStep, margin,
